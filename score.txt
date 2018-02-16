@@ -1,1 +1,1 @@
-w: 698 pts, 47 kills, 228 seconds/nacho: 551 pts, 28 kills, 271 seconds/laura: 21 pts, 0 kills, 21 seconds/Oscar: 22 pts, 0 kills, 22 seconds/waa: 24 pts, 0 kills, 24 seconds/LAURA: 1266 pts, 89 kills, 376 seconds/mabel : 1128 pts, 76 kills, 368 seconds/yuhiro: 57 pts, 2 kills, 37 seconds/yuhir: 139 pts, 9 kills, 49 seconds
+w 698 47 228/nacho 551 28 271/laura 21 0 21/Oscar 22 0 22/waa 24 0 24/LAURA 1266 89 376/mabel 1128 76 368/yuhiro 57 2 37/yuhir 139 9 49/wdasd 2010 152 490/Yuhiro 255 17 85

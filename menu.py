@@ -71,10 +71,10 @@ def home():
             nickname, nickname_rect = process_text(name, HW, H - 230, GREY, 20, "m12")
 
         if credits_button.hover(mouse.position()) and mouse.pressed():
-            credits(process_text, W, H)
+            credits(W, H)
 
         if score_button.hover(mouse.position()) and mouse.pressed():
-            score(process_text, W, H)
+            score(W, H)
 
         pygame.draw.rect(SCREEN, WHITE, (HW - 150 , H - 260, 300, 60))
         SCREEN.blit(nickname, nickname_rect)

@@ -23,19 +23,20 @@ class Mouse(Sprite):
         return res[button]
 
 class Button(pygame.sprite.Sprite):
-    def __init__(self, image_path, x, y):
+    def __init__(self, image_path, x, y, transparent=False):
         self.image_path = image_path
-        self.image = pygame.image.load(image_path + ".png").convert()
+        self.image = load_image(image_path + ".png", transparent)
         self.rect = self.image.get_rect()
         self.rect.centerx = x
         self.rect.centery = y
+        self.transparent = transparent
 
     def hover(self, mouse):
         if mouse[0] > self.rect[0] and mouse[1] > self.rect[1] and mouse[0] < self.rect[2] + self.rect[0] and mouse[1] < self.rect[3] + self.rect[1]:
-            self.image = pygame.image.load(self.image_path + "_hover.png").convert()
+            self.image = load_image(self.image_path + "_hover.png", self.transparent)
             return True
         else:
-            self.image = pygame.image.load(self.image_path + ".png").convert()
+            self.image = load_image(self.image_path + ".png", self.transparent)
             return False
 
 class Input:

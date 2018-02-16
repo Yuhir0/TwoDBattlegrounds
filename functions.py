@@ -39,9 +39,9 @@ def degrees(radians):
 def write_score(player_name, score, kills, time):
     score_file = open("score.txt", "r+")
     if len(score_file.read()) > 0:
-        new_score = score_file.read() + "/" + player_name + ": " + str(score) + " pts, " + str(kills) + " kills, " + str(time / 60) + " seconds"
+        new_score = score_file.read() + "/" + player_name + " " + str(score) + " " + str(kills) + " " + str(time / 60)
     else:
-        new_score = player_name + ": " + str(score) + " pts, " + str(kills) + " kills, " + str(time / 60) + " seconds"
+        new_score = player_name + " " + str(score) + " " + str(kills) + " " + str(time / 60)
     score_file.write(new_score)
     score_file.close()
 
