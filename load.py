@@ -19,10 +19,10 @@ def stage_config(map_name):
     return elements, names, images
 
 def load_weapon(position):
-    weapon = (("Pistol", "Light", "sounds/pistol.wav", 30, 12, 12, 30, 120, 30, (-2, 2)),
-              ("Rifle", "Medium", "sounds/rifle1.wav", 30, 30, 30, 8, 150, 40, (-1, 1)),
-              ("Shotgun", "Cartridge", "sounds/shotgun.wav", 35, 5, 5, 50, 180, 10, (-1, 1)),
-              ("Sniper", "Heavy", "sounds/sniper.wav", 100, 5, 5, 90, 200, 100, (0, 0)))
+    weapon = (("Pistol", "hand_gun", "Light", "sounds/pistol.wav", 30, 12, 12, 30, 120, 30, (-2, 2)),
+              ("Rifle", "hand_gun", "Medium", "sounds/rifle1.wav", 30, 30, 30, 8, 150, 40, (-1, 1)),
+              ("Shotgun", "hand_gun", "Cartridge", "sounds/shotgun.wav", 35, 5, 5, 50, 180, 10, (-1, 1)),
+              ("Sniper", "hand_gun", "Heavy", "sounds/sniper.wav", 100, 5, 5, 90, 200, 100, (0, 0)))
     return weapon[position]
 
 def weapon_image(position):

@@ -19,17 +19,14 @@ class Player(Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.name = name
         self.life = 100
-        self.image = pygame.image.load("graphics/player_0_w0.png").convert()
+        self.image = load_image("graphics/player_0_w0.png", True)
         self.degrees = 0
-        self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect()
-        self.initial_posx = x
-        self.initial_posy = y
         self.rect.centerx = x
         self.rect.centery = y
         self.walk = 0
         self.ammo = {"Light": 0, "Medium": 0, "Heavy": 0, "Cartridge": 0}
-        self.guns = [Guns("Knife", None, "pistol", 50, 1, 1, 30, 0, 1, (0, 0))]
+        self.guns = [Guns("Knife", "hand_gun", None, "pistol", 50, 1, 1, 30, 0, 1, (0, 0))]
 
     def animation(self):
         if self.degrees < 45 or self.degrees >= 315:
@@ -46,7 +43,7 @@ class Player(Sprite):
 
     def pickup_gun(self, gun):
         if len(self.guns) < 4:
-            self.guns.append(Guns(gun[0], gun[1], gun[2], gun[3], gun[4], gun[5], gun[6], gun[7], gun[8], gun[9]))
+            self.guns.append(Guns(gun[0], gun[1], gun[2], gun[3], gun[4], gun[5], gun[6], gun[7], gun[8], gun[9]), gun[10])
             return True
         return False
 
@@ -59,7 +56,7 @@ class Zombie(Sprite):
         self.name = name
         self.life = 100
         self.damage = 15
-        self.path = path
+        self.image_path = path
         self.image = load_image(path + "_0.png", True)
         self.degrees = 0
         self.mask = pygame.mask.from_surface(self.image)
@@ -87,7 +84,7 @@ class Zombie(Sprite):
         elif self.degrees < 315 and self.degrees >= 225:
             self.degrees = 270
 
-        self.image = load_image(self.path + "_" + str(self.degrees) + ".png", True)
+        self.image = load_image(self.image_path + "_" + str(self.degrees) + ".png", True)
         return
 
     def ai(self, player):
@@ -127,13 +124,18 @@ class Zombies(Group):
             SCREEN.blit(zombie.image, zombie.rect)
 
 class Guns(Sprite):
-    def __init__(self, name, ammo, shot_sound, damage, maxCharger, charger, shotingTime, reloadTime, distance, deviation):
+    def __init__(self, name, image, ammo, shot_sound, damage, maxCharger, charger, shotingTime, reloadTime, distance, deviation):
         pygame.sprite.Sprite.__init__(self)
         self.name = name
-        self.animation = ""#[pygame.image.load(image).convert(), 0]
+        self.image_path = image
+        self.image = load_image("graphics/" + image + "_0.png")
+        self.hand_distance = 10
+        self.rect = self.image.get_rect()
+        self.rect.centerx = HW
+        self.rect.centery = HH + self.hand_distance
         self.damage = damage
         self.ammo = ammo
-        self.maxCharger = charger
+        self.maxCharger = maxCharger
         self.charger = charger
         self.shotingTime = shotingTime
         self.reloadTime = reloadTime
@@ -190,6 +192,19 @@ class Guns(Sprite):
                 player.ammo[self.ammo] = 0
 
         self.reloading -= 1
+        return
+
+    def animation(self, player):
+        if player.degrees == 0:
+            self.rect.centery = HW + self.hand_distance
+        elif player.degrees == 90:
+            self.rect.centerx = HH + self.hand_distance
+        elif player.degrees == 180:
+            self.rect.centery = HW - self.hand_distance
+        elif player.degrees == 270:
+            self.rect.centerx = HH - self.hand_distance
+
+        self.image = load_image("graphics/" + self.image_path + "_" + str(player.degrees) + ".png", True)
         return
 
 class Bullet(Sprite):
@@ -318,7 +333,8 @@ def drop_weapon(keys, player):
     global hand, drop_timer
     if keys[K_g] and hand > 0 and drop_timer == 0:
         rnd = (50,-50)
-        weapon = MapObjects("Weapon", weapon_image(search_weapon(player.guns[hand].name)), HW - playerx + rnd[random.randint(0,1)], HH - playery + rnd[random.randint(0,1)], (player.guns[hand].name, player.guns[hand].ammo,\
+        weapon = MapObjects("Weapon", weapon_image(search_weapon(player.guns[hand].name)), HW - playerx + rnd[random.randint(0,1)],\
+        HH - playery + rnd[random.randint(0,1)], (player.guns[hand].name, player.guns[hand].image_path, player.guns[hand].ammo,\
         player.guns[hand].shot_sound, player.guns[hand].damage, player.guns[hand].maxCharger, player.guns[hand].charger,\
         player.guns[hand].shotingTime, player.guns[hand].reloadTime, player.guns[hand].distance, player.guns[hand].deviation), None, True)
         player.guns.pop(hand)
@@ -369,6 +385,7 @@ def mouse_interaction(player, click, position, pmy, pmx):
     radians = math.atan2(position[1] - pmy, position[0] - pmx)
     player.degrees = degrees(radians)
     player.animation()
+    player.guns[hand].animation(player)
 
     # Shoot on click
     if click and player.guns[hand].charger > 0 and shotTime == 0:
@@ -533,7 +550,9 @@ def main():
         # Position on screen
         map.draw()
         SCREEN.blit(name, name_rect), player_life(player), SCREEN.blit(charger, charger_rect)
-        SCREEN.blit(player.image, player.rect), reload(player)
+        SCREEN.blit(player.guns[hand].image, player.guns[hand].rect)
+        SCREEN.blit(player.image, player.rect)
+        reload(player)
         zombies.update(player)
         SCREEN.blit(to_exit, to_exit_rect)
         bullets.update()

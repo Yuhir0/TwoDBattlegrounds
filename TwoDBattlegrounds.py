@@ -133,7 +133,7 @@ class Guns(Sprite):
         self.animation = ""#[pygame.image.load(image).convert(), 0]
         self.damage = damage
         self.ammo = ammo
-        self.maxCharger = charger
+        self.maxCharger = maxCharger
         self.charger = charger
         self.shotingTime = shotingTime
         self.reloadTime = reloadTime
@@ -215,7 +215,7 @@ class Bullet(Sprite):
 
     def wall_collide(self, walls):
         for object in walls:
-            if not object.name in ("Wall Fence", "Spawn Wall") and "Wall" in object.name:
+            if not ("Fence" in object.name or "Spawn" in object.name) and "Wall" in object.name:
                 bullets.remove(self)
 
 class Bullets(Group):
