@@ -215,7 +215,7 @@ class Bullet(Sprite):
 
     def wall_collide(self, walls):
         for object in walls:
-            if not object.name in ("Wall Fence", "Spawn Wall") and "Wall" in object.name:
+            if not ("Fence" in object.name or "Spawn" in object.name) and "Wall" in object.name:
                 bullets.remove(self)
 
 class Bullets(Group):

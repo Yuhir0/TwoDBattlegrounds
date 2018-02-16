@@ -28,9 +28,10 @@ def stage_config(map_name):
     images = []
     config = open("graphics/maps/" + map_name + "/map.conf").readlines()
     for c in config:
-        elements.append(c.split()[0])
+        elements.append(c.split('"')[0][:-1])
         names.append(c.split('"')[1])
-        images.append(c.split()[3])
+        images.append(c.split('"')[2][1:-2])
+        print elements, names, images
     return elements, names, images
 
 def stage2():
