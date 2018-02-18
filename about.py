@@ -59,7 +59,7 @@ def read_score(SCREEN, HW, H):
         text, text_rect = process_text("None Scores", HW, y, (255,255,255), 35)
         SCREEN.blit(text, text_rect)
     score_file.close()
-    return posy + len(score_text) * 40
+    return posy + 80 + len(score_text) * 40
 
 def sort_score(score_text):
     for j in range(len(score_text)):

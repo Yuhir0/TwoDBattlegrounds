@@ -4,18 +4,18 @@ W              S                          I                                     
 W    AG        S                    wwwwwwwwwwww                                                              SSSSSSSSSSW
 W              S                    w          w                                                              SSSSSSSSSSW
 W              S                         A                iiiiiiiiiiii   iiiiiiiiiiiii                        SSSSSSSSSSW
-V              S                          G               I                          I                         SSSSSSSSSW
+V              S                          G               I                          I                        ASSSSSSSSSW
 W        AG    S                    w          w          I                          I                         VSSSSSSSSW
-W              S                    wwwwwwwwwwww          I  Ffffffffff ffffffffffF  I                           SSSSSSSW
+W              S                    wwwwwwwwwwww          I  Ffffffffff ffffffffffF  I                          ASSSSSSSW
 W                                         I               I  F                    F  I                                  W
-W                                         I               I  F    A          A    F  I                                  W
+W                                         I               I  F    AA        AA    F  I                                  W
 W                                         I                  F                    F                                     W
-WSSSSSSSSSSSSSSS                          I                            V                                                W
-W                                         I                  F    A          A    F                                     W
-W                                         I               I  F                    F  I                                  W
-W                                         I               I  Ffffffffff ffffffffffF  I                                  W
-W                                         I               I                          I                                  W
-W          BBBBBBBBBBBBBBBBBBB   BBBBBBBBBB               I                          I                                  W
+WSSSSSSSSSSSSSSS                          I                            V                               f  f             W
+W                                         I                  F    AA        AA    F                   FAAAAF            W
+W                                         I               I  F                    F  I                 AAVA             W
+W                                         I               I  Ffffffffff ffffffffffF  I                 AVAA             W
+W                                         I               I                          I                FAAAAF            W
+W          BBBBBBBBBBBBBBBBBBB   BBBBBBBBBB               I                          I                 f  f             W
 W          B           w                  B               iiiiiiiiiiii   iiiiiiiiiiiii                                  W
 W          B           w                  B                                                                             W
 W          B           w                  B                                                                             W
@@ -55,4 +55,4 @@ W                 F                                                             
 W                 F                                                                                                     W
 W                 F                                                                                                     W
 W                 F                                                                                                     W
-WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+WWWWWWWWWVWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWVWWWWWWWWWWWWWWW

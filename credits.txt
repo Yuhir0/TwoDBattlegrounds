@@ -1,13 +1,16 @@
 *GAME DEVELOPER
-Oscar Garcia
+Oscar Garcia (Yuhiro)
 
 *GRAPHICS
-Oscar Garcia
-Mael Lema
+Mael Lema (Zyx)
+Oscar Garcia (Yuhiro)
 
 *SOUNDS
-Oscar Garcia
-Mael Lema
-Gerard Gimenez
-Edurne Nunez
+Edurne Nunez (Leona)
+Gerard Gimenez (Yuuichi)
+Mael Lema (Zyx)
+Oscar Garcia (Yuhiro)
+
+
+
 
