@@ -7,14 +7,14 @@ import pygame, sys
 from pygame.locals import *
 from about import credits, score
 from clases import Button, Input, Mouse
-from functions import events, process_text
+from functions import events, process_text, load_image
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 # Home menu
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def home():
-
     pygame.init()
+    pygame.display.set_caption("TwoD Battlegrounds")
 
     # Screen
     W, H = 800, 600
@@ -31,13 +31,14 @@ def home():
     WHITE = (255,255,255)
     GREY = (100,100,100)
     LIGHT_GREY = (170,170,170)
-    CORNFLOWERBLUE = (100,149,237)
 
     # Clock
     CLOCK = pygame.time.Clock()
     FPS = 60
 
     name = ""
+
+    background = load_image("graphics/twodbattlegrounds.png")
 
     title_font = "ice_pixel-7"
     title_size = 130
@@ -76,6 +77,7 @@ def home():
         if score_button.hover(mouse.position()) and mouse.pressed():
             score(W, H)
 
+        SCREEN.blit(background, (0, 0))
         pygame.draw.rect(SCREEN, WHITE, (HW - 150 , H - 260, 300, 60))
         SCREEN.blit(nickname, nickname_rect)
         SCREEN.blit(TwoD, TwoD_rect)
@@ -88,7 +90,6 @@ def home():
         SCREEN.blit(score_text, score_text_rect)
 
         pygame.display.update()
-        SCREEN.fill(CORNFLOWERBLUE)
         CLOCK.tick(FPS)
 
     return name

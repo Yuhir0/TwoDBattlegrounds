@@ -75,6 +75,7 @@ class Zombie(Sprite):
 
     def hitting(self, player):
         if collide_rect(player, self) and self.hitting_time == 0:
+            pygame.mixer.Sound("sounds/hit" + str(random.randint(1,4)) + ".wav").play()
             player.life -= self.damage
             self.hitting_time = self.hitting_speed
         elif self.hitting_time > 0:
@@ -98,8 +99,9 @@ class Player(Sprite):
         self.rect.centerx = x
         self.rect.centery = y
         self.walk = 0
+        self.walk_time = 0
         self.ammo = {"Light": 0, "Medium": 0, "Heavy": 0, "Shells": 0}
-        self.guns = [Gun("Knife", "hand_gun", None, "pistol", 50, 1, 1, 30, 0, 1, (0, 0), 20)]
+        self.guns = [Gun("Knife", "hand_knife", None, "pistol", 50, 1, 1, 30, 0, 1, (0, 0), 20)]
 
     def animation(self):
         if self.degrees < 45 or self.degrees >= 315:
@@ -150,16 +152,16 @@ class Gun(Sprite):
         shotTime = self.shotingTime
         distance = self.distance
         if self.name == "Shotgun":
-            dx = math.cos(radians) * MULTIPLIER  - math.sin(radians) * 8
-            dy = math.sin(radians) * MULTIPLIER  + math.cos(radians) * 8
+            dx = math.cos(radians) * MULTIPLIER  - math.sin(radians) * 5
+            dy = math.sin(radians) * MULTIPLIER  + math.cos(radians) * 5
             bullets.add(Bullet(self.damage, distance, dx, dy))
 
             dx = math.cos(radians) * MULTIPLIER - self.accuarcy()
             dy = math.sin(radians) * MULTIPLIER
             bullets.add(Bullet(self.damage, distance, dx, dy))
 
-            dx = math.cos(radians) * MULTIPLIER  + math.sin(radians) * 8
-            dy = math.sin(radians) * MULTIPLIER  - math.cos(radians) * 8
+            dx = math.cos(radians) * MULTIPLIER  + math.sin(radians) * 5
+            dy = math.sin(radians) * MULTIPLIER  - math.cos(radians) * 5
             bullets.add(Bullet(self.damage, distance, dx, dy))
         else:
             if self.name == "Knife":
@@ -275,12 +277,16 @@ class Map(Group):
         for object in self:
             object.update()
             if "Wall" in object.name and pygame.sprite.collide_rect(object, player):
+                if object.name == "Spawn Wall":
+                    pygame.mixer.Sound("sounds/thewae2.wav").play()
                 return True
             if object.name == "Weapon" and pygame.sprite.collide_rect(object, player):
                 if player.pickup_gun(object.gun):
+                    pygame.mixer.Sound("sounds/say_pick2.wav").play()
                     self.remove(object)
             if object.name == "Ammo" and pygame.sprite.collide_rect(object, player):
                 player.pickup_ammo(object.ammo)
+                pygame.mixer.Sound("sounds/say_pick2.wav").play()
                 self.remove(object)
         return False
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -321,6 +327,7 @@ def change_gun(keys, player):
 def drop_weapon(keys, player):
     global hand, drop_timer
     if keys[K_g] and hand > 0 and drop_timer == 0:
+        pygame.mixer.Sound("sounds/drop.wav").play()
         rnd = (50,-50)
         weapon = MapObjects("Weapon", weapon_image(search_weapon(player.guns[hand].name)), HW - playerx + rnd[random.randint(0,1)],\
         HH - playery + rnd[random.randint(0,1)], (player.guns[hand].name, player.guns[hand].image_path, player.guns[hand].ammo,\
@@ -353,7 +360,9 @@ def sprint(keys, player):
     return
 
 def move_control(keys, player):
-    if keys:
+    if keys[K_w] or keys[K_d] or keys[K_s] or keys[K_a]:
+        walk_animation(player)
+
         if keys[K_w]:
             move_up(player)
         if keys[K_d]:
@@ -362,22 +371,30 @@ def move_control(keys, player):
             move_down(player)
         if keys[K_a]:
             move_left(player)
-
-def walk_animation(player):
-    if player.walk < 2:
-        player.walk += 1
     else:
         player.walk = 0
+        player.walk_time = 0
 
-def mouse_interaction(player, click, position, pmy, pmx):
-    # Control position on the screen
-    radians = math.atan2(position[1] - pmy, position[0] - pmx)
+def walk_animation(player):
+    if player.walk_time == 0 or player.walk_time >= 30:
+        pygame.mixer.Sound("sounds/walk.wav").play()
+        player.walk += 1 if player.walk < 2 else -1
+        player.walk_time = 0
+
+    if speed == 2:
+        player.walk_time += 1
+    else:
+        player.walk_time += 2
+
+def mouse_interaction(player, click, position):
+    # Calculate radians of the mouse on the screen
+    radians = math.atan2(position[1] - HH, position[0] - HW)
     player.degrees = degrees(radians)
     player.animation()
     player.guns[hand].animation(player)
 
-    # Shoot on click
-    if click and player.guns[hand].charger > 0 and shotTime == 0:
+    # Shoot on click mouse left button
+    if click and player.guns[hand].charger > 0 and shotTime == 0 and player.guns[hand].reloading == 0:
         player.guns[hand].shoting(radians)
     return
 
@@ -442,8 +459,9 @@ def player_life(player):
 def game_over(player):
     gameover_text, gameover_text_rect = process_text("GAME OVER", HW, HH - 300, WHITE, 80)
     write_score(player.name, score, kills, time)
+    pygame.mixer.Sound("sounds/gameover.wav").play()
 
-    for i in range(360):
+    for i in range(240):
         events()
 
         SCREEN.blit(player.image, player.rect)
@@ -512,6 +530,12 @@ def start_position():
     playerx, playery = player_spawners[random.randint(0, len(player_spawners)-1)]
     playerx += HW
     playery += HH
+
+def draw_cursor(mouse, cursor):
+    cursor_rect = cursor.get_rect()
+    cursor_rect.centerx = mouse.posx
+    cursor_rect.centery = mouse.posy
+    SCREEN.blit(cursor, cursor_rect)
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 
@@ -520,13 +544,12 @@ def start_position():
 def main():
     global shotx, shoty, shotTime, distance, name, bullets, zombies, gen_zombie_timer, gen_weapon_timer, gen_ammo_timer, time, score
 
-    stagex, stagey = load_map(MapObjects, map, zombies_spawners, ammo_spawners, weapon_spawners, player_spawners)
+    stage_background, stagex, stagey = load_map(MapObjects, map, zombies_spawners, ammo_spawners, weapon_spawners, player_spawners)
+    background = load_image(stage_background)
 
     start_position()
 
     player = Player(player_name, HW, HH)
-
-    #background = load_image("graphics/map1.png")
 
     # Cursor
     pygame.mouse.set_visible(False)
@@ -541,7 +564,7 @@ def main():
 
         keyboard_interaction(pygame.key.get_pressed(), player)
 
-        mouse_interaction(player, mouse.pressed(), mouse.position(), HH, HW)
+        mouse_interaction(player, mouse.pressed(), mouse.position())
 
         generate_zombies()
         generate_weapon()
@@ -550,6 +573,8 @@ def main():
         charger, charger_rect = process_text(str(player.guns[hand].charger), 70, H - 50, WHITE, 30)
 
         # Position on screen
+        SCREEN.blit(background, (playerx, playery))
+        bullets.update()
         map.draw()
         SCREEN.blit(name, name_rect), player_life(player), SCREEN.blit(charger, charger_rect)
         SCREEN.blit(player.image, player.rect)
@@ -557,12 +582,11 @@ def main():
         reload(player)
         zombies.update(player)
         SCREEN.blit(to_exit, to_exit_rect)
-        bullets.update()
         score = scoreboard()
         inventory(player)
 
         # Cursosr on screen
-        SCREEN.blit(cursor, (mouse.posx - 15, mouse.posy - 15))
+        draw_cursor(mouse, cursor)
 
         pygame.display.update()
         SCREEN.fill(BLACK)
@@ -583,16 +607,14 @@ def main():
 pygame.init()
 while True:
     player_name = home()
+    pygame.display.set_caption("TwoD Battlegrounds")
 
     # Screen
     W, H = 1280, 720
     HW, HH = W / 2, H / 2 # Half
     AREA = W * H
 
-    try:
-        SCREEN = pygame.display.set_mode((W, H), pygame.FULLSCREEN)
-    except:
-        SCREEN = pygame.display.set_mode((W, H))
+    SCREEN = pygame.display.set_mode((W, H))
 
         # Colors
     RED = (255, 0, 0)

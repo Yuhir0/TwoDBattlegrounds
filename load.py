@@ -21,7 +21,7 @@ def stage_config(map_name):
     images = []
     transparent = []
     config = open("graphics/maps/" + map_name + "/map.conf").readlines()
-    for c in config:
+    for c in config[:-1]:
         elements.append(c.split('"')[0][:-1])
         names.append(c.split('"')[1])
         if c.split()[len(c.split())-1:][0] == "T" and not ".png" in c.split()[len(c.split())-1:]:
@@ -30,8 +30,8 @@ def stage_config(map_name):
         else:
             transparent.append(0)
             images.append(c.split('"')[2][1:-limit])
-    print images
-    return elements, names, images, transparent
+    background = config[len(config)-1:][0]
+    return elements, names, images, transparent, background.split()[1:][0]
 
 def load_weapon(position):
     weapon = (("Pistol", "hand_pistol", "Light", "sounds/pistol.wav", 30, 12, 12, 30, 120, 30, (-2, 2), 10),
@@ -68,9 +68,8 @@ def choose_map():
 
 def load_map(MapObjects, map, zombies_spawners, ammo_spawners, weapon_spawners, player_spawners):
     map_name = choose_map()
-    map_name = "test"
 
-    elements, names, images, transparent = stage_config(map_name)
+    elements, names, images, transparent, background = stage_config(map_name)
 
     y = 0
     for row in stage(map_name):
@@ -94,4 +93,4 @@ def load_map(MapObjects, map, zombies_spawners, ammo_spawners, weapon_spawners, 
                 player_spawners.append((-x,-y))
             x += 50
         y += 50
-    return x, y
+    return "graphics/maps/" + map_name + "/" + background, x, y
