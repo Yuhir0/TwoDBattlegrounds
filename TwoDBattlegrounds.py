@@ -314,13 +314,17 @@ def keyboard_interaction(keys, player):
 
 def change_gun(keys, player):
     global hand
-    if keys[K_1]:
+    if keys[K_1] and hand != 0:
+        player.guns[hand].reloading = 0
         hand = 0
-    if keys[K_2] and len(player.guns) >= 2:
+    if keys[K_2] and len(player.guns) >= 2 and hand != 1:
+        player.guns[hand].reloading = 0
         hand = 1
-    if keys[K_3] and len(player.guns) >= 3:
+    if keys[K_3] and len(player.guns) >= 3 and hand != 2:
+        player.guns[hand].reloading = 0
         hand = 2
-    if keys[K_4] and len(player.guns) == 4:
+    if keys[K_4] and len(player.guns) == 4 and hand != 3:
+        player.guns[hand].reloading = 0
         hand = 3
     return
 
@@ -460,13 +464,14 @@ def game_over(player):
     gameover_text, gameover_text_rect = process_text("GAME OVER", HW, HH - 300, WHITE, 80)
     write_score(player.name, score, kills, time)
     pygame.mixer.Sound("sounds/gameover.wav").play()
+    score_text, score_rect = process_text("Your score is [" + str(score) + "]", HW, H - 300, WHITE, 50)
 
     for i in range(240):
         events()
 
         SCREEN.blit(player.image, player.rect)
         SCREEN.blit(gameover_text, gameover_text_rect)
-
+        SCREEN.blit(score_text, score_rect)
         pygame.display.update()
         SCREEN.fill(BLACK)
         CLOCK.tick(FPS)
