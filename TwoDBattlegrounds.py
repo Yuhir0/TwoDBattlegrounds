@@ -38,6 +38,7 @@ class Zombie(Sprite):
     def update(self):
         self.rect.centerx = self.initial_posx + playerx
         self.rect.centery = self.initial_posy + playery
+        return
 
     def animation(self, degrees):
         if degrees < 45 or degrees >= 315:
@@ -66,6 +67,7 @@ class Zombie(Sprite):
         self.update()
         if self.wall_collide():
             self.initial_posy -= self.dy * self.speed
+        return
 
     def wall_collide(self):
         for object in spritecollide(self, map, False):
@@ -80,6 +82,7 @@ class Zombie(Sprite):
             self.hitting_time = self.hitting_speed
         elif self.hitting_time > 0:
             self.hitting_time -= 1
+        return
 
 class Zombies(Group):
     def update(self, player):
@@ -87,6 +90,7 @@ class Zombies(Group):
             zombie.ai(player)
             zombie.hitting(player)
             SCREEN.blit(zombie.image, zombie.rect)
+        return
 
 class Player(Sprite):
     def __init__(self, name, x, y):
@@ -124,6 +128,7 @@ class Player(Sprite):
 
     def pickup_ammo(self, ammo):
         self.ammo[ammo[0]] += ammo[1]
+        return
 
 class Gun(Sprite):
     def __init__(self, name, image, ammo, shot_sound, damage, maxCharger, charger, shotingTime, reloadTime, distance, deviation, hand_distance):
@@ -133,7 +138,7 @@ class Gun(Sprite):
         self.image = load_image("graphics/" + image + "_0.png", True)
         self.hand_distance = hand_distance
         self.rect = self.image.get_rect()
-        self.rect.centerx = HW #+ self.hand_distance
+        self.rect.centerx = HW
         self.rect.centery = HH
         self.damage = damage
         self.ammo = ammo
@@ -223,11 +228,13 @@ class Bullet(Sprite):
             if zombie.life <= 0:
                 zombies.remove(zombie)
                 kills += 1
+        return
 
     def wall_collide(self, walls):
         for object in walls:
             if not ("Fence" in object.name or "Spawn" in object.name) and "Wall" in object.name:
                 bullets.remove(self)
+        return
 
 class Bullets(Group):
     def update(self):
@@ -344,6 +351,7 @@ def drop_weapon(keys, player):
         drop_timer = 10
     elif drop_timer > 0:
         drop_timer -= 1
+    return
 
 def search_weapon(weapon_name):
     if weapon_name == "Pistol":
@@ -378,6 +386,7 @@ def move_control(keys, player):
     else:
         player.walk = 0
         player.walk_time = 0
+    return
 
 def walk_animation(player):
     if player.walk_time == 0 or player.walk_time >= 30:
@@ -389,6 +398,7 @@ def walk_animation(player):
         player.walk_time += 1
     else:
         player.walk_time += 2
+    return
 
 def mouse_interaction(player, click, position):
     # Calculate radians of the mouse on the screen
@@ -479,8 +489,8 @@ def game_over(player):
 
 def load_zombie(position, x, y):
     zombies = (Zombie("Basic Zombie", "graphics/basic_zombie", x, y, 100, 15, 1.5),
-               Zombie("Tanky Zombie", "graphics/tanky_zombie", x, y, 200, 8, 1),
-               Zombie("Fast Zombie", "graphics/fast_zombie", x, y, 70, 20, 3))
+               Zombie("Tanky Zombie", "graphics/tanky_zombie", x, y, 300, 20, 1),
+               Zombie("Fast Zombie", "graphics/fast_zombie", x, y, 70, 10, 3))
     return zombies[random.randint(0, position)]
 
 def generate_zombies():
@@ -609,58 +619,59 @@ def main():
 
 # Global
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-pygame.init()
-while True:
-    player_name = home()
-    pygame.display.set_caption("TwoD Battlegrounds")
+if __name__ == '__main__':
+    pygame.init()
+    while True:
+        player_name = home()
+        pygame.display.set_caption("TwoD Battlegrounds")
 
-    # Screen
-    W, H = 1280, 720
-    HW, HH = W / 2, H / 2 # Half
-    AREA = W * H
+        # Screen
+        W, H = 1280, 720
+        HW, HH = W / 2, H / 2 # Half
+        AREA = W * H
 
-    SCREEN = pygame.display.set_mode((W, H))
+        SCREEN = pygame.display.set_mode((W, H))
 
-        # Colors
-    RED = (255, 0, 0)
-    GREEN = (0,255,0)
-    BLUE = (0,0,255)
-    YELLOW = (255,255,0)
-    BLACK = (0,0,0)
-    WHITE = (255,255,255)
-    GREY = (122, 122, 122)
+            # Colors
+        RED = (255, 0, 0)
+        GREEN = (0,255,0)
+        BLUE = (0,0,255)
+        YELLOW = (255,255,0)
+        BLACK = (0,0,0)
+        WHITE = (255,255,255)
+        GREY = (122, 122, 122)
 
-        # Clock
-    CLOCK = pygame.time.Clock()
-    FPS = 60
+            # Clock
+        CLOCK = pygame.time.Clock()
+        FPS = 60
 
-        #Player position
-    playerx, playery = 0, 0
+            #Player position
+        playerx, playery = 0, 0
 
-        # Shoot
-    bullets = Bullets()
-    shotTime = 0
-    distance = 0
+            # Shoot
+        bullets = Bullets()
+        shotTime = 0
+        distance = 0
 
-        # Timers
-    drop_timer = 0
-    gen_zombie_timer = 0
-    gen_weapon_timer = 0
-    gen_ammo_timer = 0
+            # Timers
+        drop_timer = 0
+        gen_zombie_timer = 0
+        gen_weapon_timer = 0
+        gen_ammo_timer = 0
 
-        # Other
-    MAX_GUNS = 4
-    hand = 0
-    speed = 2
-    map = Map()
-    zombies = Zombies()
-    zombies_spawners = []
-    ammo_spawners = []
-    weapon_spawners = []
-    player_spawners = []
-    time = 0
-    kills = 0
-    score = 0
+            # Other
+        MAX_GUNS = 4
+        hand = 0
+        speed = 2
+        map = Map()
+        zombies = Zombies()
+        zombies_spawners = []
+        ammo_spawners = []
+        weapon_spawners = []
+        player_spawners = []
+        time = 0
+        kills = 0
+        score = 0
 
-    main()
+        main()
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
