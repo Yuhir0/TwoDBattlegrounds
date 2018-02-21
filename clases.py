@@ -51,7 +51,7 @@ class Input:
             if event.type == KEYDOWN:
                 if event.key == K_BACKSPACE and len(self.characters) > 0:
                     self.characters = self.characters[0:-1]
-                elif len(self.characters) <= 12 and event.key not in (K_BACKSPACE, K_RETURN):
+                elif len(self.characters) <= 12 and event.key not in (K_BACKSPACE, K_RETURN, K_SPACE):
                     self.characters += str(event.unicode)
 
         return self.write()

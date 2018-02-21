@@ -67,7 +67,7 @@ def home():
 
         name = input.read()
         if len(name) == 0:
-            nickname, nickname_rect = process_text("Tap your nickname", HW, H - 230, LIGHT_GREY, 30)
+            nickname, nickname_rect = process_text("Type your nickname", HW, H - 230, LIGHT_GREY, 30)
         else:
             nickname, nickname_rect = process_text(name, HW, H - 230, GREY, 20, "m12")
 
