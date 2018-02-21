@@ -42,6 +42,8 @@ class Button(pygame.sprite.Sprite):
 class Input:
     def __init__(self):
         self.characters = []
+        self.error_time = 0
+        self.error = "Incorrect character"
 
     def read(self):
         for event in pygame.event.get():
@@ -52,7 +54,10 @@ class Input:
                 if event.key == K_BACKSPACE and len(self.characters) > 0:
                     self.characters = self.characters[0:-1]
                 elif len(self.characters) <= 12 and event.key not in (K_BACKSPACE, K_RETURN, K_SPACE):
-                    self.characters += str(event.unicode)
+                    try:
+                        self.characters += str(event.unicode)
+                    except:
+                        self.error_time = 90
 
         return self.write()
 
@@ -61,3 +66,9 @@ class Input:
         for i in self.characters:
             name += i
         return name
+
+    def show_errors(self, SCREEN, posx, posy, color):
+        if self.error_time > 0:
+            error, error_rect = process_text(self.error, posx, posy, color, 30)
+            SCREEN.blit(error, error_rect)
+            self.error_time -= 1

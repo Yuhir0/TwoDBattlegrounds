@@ -34,9 +34,9 @@ def stage_config(map_name):
     return elements, names, images, transparent, background.split()[1:][0]
 
 def load_weapon(position):
-    weapon = (("Pistol", "hand_pistol", "Light", "sounds/pistol.wav", 30, 12, 12, 30, 120, 30, (-2, 2), 10),
-              ("Rifle", "hand_rifle", "Medium", "sounds/rifle1.wav", 30, 30, 30, 8, 150, 40, (-1, 1), 10),
-              ("Shotgun", "hand_shotgun", "Shells", "sounds/shotgun.wav", 35, 5, 5, 50, 180, 10, (-1, 1), 10),
+    weapon = (("Pistol", "hand_pistol", "Light", "sounds/pistol.wav", 35, 12, 12, 30, 90, 30, (-2, 2), 10),
+              ("Rifle", "hand_rifle", "Medium", "sounds/rifle1.wav", 30, 30, 30, 8, 120, 40, (-1, 1), 10),
+              ("Shotgun", "hand_shotgun", "Shells", "sounds/shotgun.wav", 25, 5, 5, 50, 180, 10, (-1, 1), 10),
               ("Sniper", "hand_sniper", "Heavy", "sounds/sniper.wav", 100, 5, 5, 90, 200, 120, (0, 0), 10))
     return weapon[position]
 
@@ -68,6 +68,7 @@ def choose_map():
 
 def load_map(MapObjects, map, zombies_spawners, ammo_spawners, weapon_spawners, player_spawners):
     map_name = choose_map()
+    map_name = "forest"
 
     elements, names, images, transparent, background = stage_config(map_name)
 

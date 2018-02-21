@@ -105,7 +105,7 @@ class Player(Sprite):
         self.walk = 0
         self.walk_time = 0
         self.ammo = {"Light": 0, "Medium": 0, "Heavy": 0, "Shells": 0}
-        self.guns = [Gun("Knife", "hand_knife", None, "pistol", 50, 1, 1, 30, 0, 1, (0, 0), 20)]
+        self.guns = [Gun("Knife", "hand_knife", None, "pistol", 50, 1, 1, 30, 0, 1, None, 20)]
 
     def animation(self):
         if self.degrees < 45 or self.degrees >= 315:
@@ -157,21 +157,16 @@ class Gun(Sprite):
         shotTime = self.shotingTime
         distance = self.distance
         if self.name == "Shotgun":
-            dx = math.cos(radians) * MULTIPLIER  - math.sin(radians) * 5
-            dy = math.sin(radians) * MULTIPLIER  + math.cos(radians) * 5
-            bullets.add(Bullet(self.damage, distance, dx, dy))
-
-            dx = math.cos(radians) * MULTIPLIER - self.accuarcy()
-            dy = math.sin(radians) * MULTIPLIER
-            bullets.add(Bullet(self.damage, distance, dx, dy))
-
-            dx = math.cos(radians) * MULTIPLIER  + math.sin(radians) * 5
-            dy = math.sin(radians) * MULTIPLIER  - math.cos(radians) * 5
-            bullets.add(Bullet(self.damage, distance, dx, dy))
+            direction = 10
+            for i in range (5):
+                dx = math.cos(radians) * MULTIPLIER  - math.sin(radians) * direction
+                dy = math.sin(radians) * MULTIPLIER  + math.cos(radians) * direction
+                bullets.add(Bullet(self.damage, distance, dx, dy))
+                direction -= 5
         else:
             if self.name == "Knife":
-                dx = math.cos(radians) * MULTIPLIER - 10 - self.accuarcy()
-                dy = math.sin(radians) * MULTIPLIER - 10
+                dx = math.cos(radians) * (MULTIPLIER - 5)
+                dy = math.sin(radians) * (MULTIPLIER - 5)
                 bullets.add(Bullet(self.damage, distance, dx, dy))
             else:
                 dx = math.cos(radians) * MULTIPLIER - self.accuarcy()
@@ -207,6 +202,11 @@ class Gun(Sprite):
         self.rect.centerx = HW
         self.rect.centery = HH
         return
+
+    def out_of_ammo(self):
+        if self.charger == 0 and self.reloading == 0:
+            text, text_rect = process_text("OUT OF AMMO", HW, HH - 30, RED)
+            SCREEN.blit(text, text_rect)
 
 class Bullet(Sprite):
     def __init__(self, damage, distance, speedx, speedy):
@@ -300,13 +300,6 @@ class Map(Group):
 
 # Game Functions
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-def events():
-    for event in pygame.event.get():
-        if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
-            pygame.quit()
-            sys.exit()
-    return
-
 def keyboard_interaction(keys, player):
     global show_inventory
     change_gun(keys, player)
@@ -599,6 +592,7 @@ def main():
         SCREEN.blit(to_exit, to_exit_rect)
         score = scoreboard()
         inventory(player)
+        player.guns[hand].out_of_ammo()
 
         # Cursosr on screen
         draw_cursor(mouse, cursor)
@@ -632,7 +626,7 @@ if __name__ == '__main__':
 
         SCREEN = pygame.display.set_mode((W, H))
 
-            # Colors
+        # Colors
         RED = (255, 0, 0)
         GREEN = (0,255,0)
         BLUE = (0,0,255)
@@ -641,37 +635,41 @@ if __name__ == '__main__':
         WHITE = (255,255,255)
         GREY = (122, 122, 122)
 
-            # Clock
+        # Clock
         CLOCK = pygame.time.Clock()
         FPS = 60
 
-            #Player position
+        #Player position
         playerx, playery = 0, 0
 
-            # Shoot
+        # Shoot
         bullets = Bullets()
         shotTime = 0
         distance = 0
 
-            # Timers
+        # Timers
         drop_timer = 0
         gen_zombie_timer = 0
         gen_weapon_timer = 0
         gen_ammo_timer = 0
 
-            # Other
+        # Score
+        time = 0
+        kills = 0
+        score = 0
+
+        # Spawner
+        zombies_spawners = []
+        ammo_spawners = []
+        weapon_spawners = []
+        player_spawners = []
+
+        # Other
         MAX_GUNS = 4
         hand = 0
         speed = 2
         map = Map()
         zombies = Zombies()
-        zombies_spawners = []
-        ammo_spawners = []
-        weapon_spawners = []
-        player_spawners = []
-        time = 0
-        kills = 0
-        score = 0
 
         main()
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

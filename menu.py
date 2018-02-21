@@ -88,6 +88,7 @@ def home():
         SCREEN.blit(credits_text, credits_text_rect)
         SCREEN.blit(score_button.image, score_button.rect)
         SCREEN.blit(score_text, score_text_rect)
+        input.show_errors(SCREEN, HW, H - 290, RED)
 
         pygame.display.update()
         CLOCK.tick(FPS)
