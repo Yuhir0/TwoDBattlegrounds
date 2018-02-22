@@ -68,7 +68,7 @@ def choose_map():
 
 def load_map(MapObjects, map, zombies_spawners, ammo_spawners, weapon_spawners, player_spawners):
     map_name = choose_map()
-    map_name = "forest"
+    map_name = "the_old"
 
     elements, names, images, transparent, background = stage_config(map_name)
 

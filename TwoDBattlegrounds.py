@@ -167,11 +167,10 @@ class Gun(Sprite):
             if self.name == "Knife":
                 dx = math.cos(radians) * (MULTIPLIER - 5)
                 dy = math.sin(radians) * (MULTIPLIER - 5)
-                bullets.add(Bullet(self.damage, distance, dx, dy))
             else:
                 dx = math.cos(radians) * MULTIPLIER - self.accuarcy()
                 dy = math.sin(radians) * MULTIPLIER
-                bullets.add(Bullet(self.damage, distance, dx, dy))
+            bullets.add(Bullet(self.damage, distance, dx, dy))
 
         if self.name == "Knife":
             self.charger = 1
@@ -347,14 +346,8 @@ def drop_weapon(keys, player):
     return
 
 def search_weapon(weapon_name):
-    if weapon_name == "Pistol":
-        return 0
-    elif weapon_name == "Rifle":
-        return 1
-    elif weapon_name == "Shotgun":
-        return 2
-    elif weapon_name == "Sniper":
-        return 3
+    weapons = {"Pistol":0, "Rifle":1, "Shotgun":2, "Sniper":3}
+    return weapons[weapon_name]
 
 def sprint(keys, player):
     global speed
@@ -368,18 +361,19 @@ def move_control(keys, player):
     if keys[K_w] or keys[K_d] or keys[K_s] or keys[K_a]:
         walk_animation(player)
 
-        if keys[K_w]:
-            move_up(player)
-        if keys[K_d]:
-            move_right(player)
-        if keys[K_s]:
-            move_down(player)
-        if keys[K_a]:
-            move_left(player)
+        if keys[K_w]: # 'W' pressed, Move Up
+            set_move(player, 0, +speed)
+        if keys[K_d]: # 'D' pressed, Move Right
+            set_move(player, -speed, 0)
+        if keys[K_s]: # 'S' pressed, Move Down
+            set_move(player, 0, -speed)
+        if keys[K_a]: # 'A' pressed, Move Left
+            set_move(player, speed, 0)
     else:
         player.walk = 0
         player.walk_time = 0
     return
+
 
 def walk_animation(player):
     if player.walk_time == 0 or player.walk_time >= 30:
@@ -405,32 +399,14 @@ def mouse_interaction(player, click, position):
         player.guns[hand].shoting(radians)
     return
 
-def move_up(player):
-    global playery
-    playery += speed
-    if map.collide(player):
-        playery -= speed
-    return
-
-def move_right(player):
-    global playerx
-    playerx -= speed
-    if map.collide(player):
-        playerx += speed
-    return
-
-def move_down(player):
-    global playery
-    playery -= speed
-    if map.collide(player):
-        playery += speed
-    return
-
-def move_left(player):
-    global playerx
-    playerx += speed
-    if map.collide(player):
-         playerx -= speed
+def set_move(player, x, y):
+    global playerx, playery
+    playerx += x
+    if map.collide(player) and x:
+        playerx -= x
+    playery += y
+    if map.collide(player) and y:
+        playery -= y
     return
 
 def reload(player):
@@ -489,7 +465,7 @@ def load_zombie(position, x, y):
 def generate_zombies():
     global gen_zombie_timer, zombies, zombies_spawners
 
-    if gen_zombie_timer >= 300 and len(zombies) < 30:
+    if gen_zombie_timer >= 300: # and len(zombies) < 30:
         max_spawners = len(zombies_spawners) - 1
         zombie_posx, zombie_posy = zombies_spawners[random.randint(0,max_spawners)]
         zombie = load_zombie(random.randint(0,2), zombie_posx, zombie_posy)
