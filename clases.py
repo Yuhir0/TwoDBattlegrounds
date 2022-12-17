@@ -1,13 +1,7 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-# Imports
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-import pygame
-from pygame.locals import *
 from pygame.sprite import *
+
 from functions import *
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 
 class Mouse(Sprite):
     def __init__(self):
@@ -22,7 +16,8 @@ class Mouse(Sprite):
         res = pygame.mouse.get_pressed()
         return res[button]
 
-class Button(pygame.sprite.Sprite):
+
+class Button(Sprite):
     def __init__(self, image_path, x, y, transparent=False):
         self.image_path = image_path
         self.image = load_image(image_path + ".png", transparent)
@@ -32,12 +27,14 @@ class Button(pygame.sprite.Sprite):
         self.transparent = transparent
 
     def hover(self, mouse):
-        if mouse[0] > self.rect[0] and mouse[1] > self.rect[1] and mouse[0] < self.rect[2] + self.rect[0] and mouse[1] < self.rect[3] + self.rect[1]:
+        if (self.rect[0] < mouse[0] < self.rect[2] + self.rect[0]
+                and self.rect[1] < mouse[1] < self.rect[3] + self.rect[1]):
             self.image = load_image(self.image_path + "_hover.png", self.transparent)
             return True
         else:
             self.image = load_image(self.image_path + ".png", self.transparent)
             return False
+
 
 class Input:
     def __init__(self):
@@ -53,7 +50,8 @@ class Input:
             if event.type == KEYDOWN:
                 if event.key == K_BACKSPACE and len(self.characters) > 0:
                     self.characters = self.characters[0:-1]
-                elif len(self.characters) <= 12 and event.key not in (K_BACKSPACE, K_RETURN, K_SPACE):
+                elif len(self.characters) <= 12 and event.key not in (
+                        K_BACKSPACE, K_RETURN, K_SPACE):
                     try:
                         self.characters += str(event.unicode)
                     except:
